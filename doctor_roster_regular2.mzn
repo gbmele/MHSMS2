@@ -18,6 +18,7 @@ var int: db_ssu;
 array[1..DAYS] of var 0..1: HL_AV;
 
 var int: tue_pm;
+var int: lewis_thu_pm;
 
 
 constraint forall( d in 1..DAYS)
@@ -39,6 +40,8 @@ constraint forall(day in days)(roster[AV,day] = p -> roster[HL,day] != p);
 
 constraint sue_tue_am=count([roster[SD,d] |d in days where d mod 7 = tuesday],a);
 
+constraint lewis_thu_pm = count([roster[LC,d] | d in thursdays],p);
+
 constraint AR_IC_am = count(incharge[AR,..],1);
 
 constraint min_mon_am = sum (doc in docs)     (sum(day in days where day mod 7 =  monday)       ( roster[ doc ,day ] = a));
@@ -51,8 +54,7 @@ constraint tue_pm = sum (doc in doccount) (sum (day in days where day mod 7 = tu
 
 constraint db_ssu = count(ssu[DB,..],1);
                                        
-solve minimize abs(3-count(HL_AV[..],1))  + abs(54 -min_fri_am) + abs(55-min_tue_am) + abs(15-sue_tue_am) + abs(55 - min_thu_am)+ abs(53 - min_mon_am)+ abs(52 - min_wed_am) + abs(4 -tue_pm) + db_ssu ;
-
+solve minimize abs(3-count(HL_AV[..],1))  + abs(54 -min_fri_am) + abs(55-min_tue_am) + abs(15-sue_tue_am) + abs(55 - min_thu_am)+ (min_mon_am - 55)+ abs(52 - min_wed_am) + abs(4 -tue_pm) + db_ssu + (lewis_thu_pm - 5);
 
 
 
@@ -81,13 +83,13 @@ int:        wk;
 array[docs,days] of var shifts: roster;
 
 %STAFF COUNT DAY SHIFT
-constraint forall(d in mondays   )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 4, 4   ],   [  5 , 8     ]  )); %mon
-constraint forall(d in tuesdays  )    (global_cardinality_low_up([roster[doc,d] | doc in doccount], [ a , p ],   [ 4, 3   ],   [  6 , 5     ]  )); %tue
-constraint forall(d in wednesdays)    (global_cardinality_low_up([roster[doc,d] | doc in doccount], [ a , p ],   [ 3, 4   ],   [  7 , 12    ]  )); %wed
-constraint forall(d in thursdays )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 4, 3   ],   [  5 , 5     ]  )); %thu
-constraint forall(d in fridays   )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 4, 3   ],   [  5 , 3     ]  )); %fri
-constraint forall(d in saturdays )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 2, 2   ],   [  3 , 3     ]  )); %sat 
-constraint forall(d in sundays   )    (global_cardinality_low_up([roster[doc,d]| doc in doccount],  [ a , p ],   [ 2, 2   ],   [  3 , 4     ]  )); %sun
+constraint forall(d in mondays   )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 3, 3   ],   [  5 , 8     ]  )); %mon
+constraint forall(d in tuesdays  )    (global_cardinality_low_up([roster[doc,d] | doc in doccount], [ a , p ],   [ 3, 3   ],   [  5 , 8    ]  )); %tue
+constraint forall(d in wednesdays)    (global_cardinality_low_up([roster[doc,d] | doc in doccount], [ a , p ],   [ 3, 2   ],   [  6 , 10    ]  )); %wed
+constraint forall(d in thursdays )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 3, 2   ],   [  6 , 10    ]  )); %thu
+constraint forall(d in fridays   )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 3, 2   ],   [  6 , 7     ]  )); %fri
+constraint forall(d in saturdays )    (global_cardinality_low_up(roster[..,d],                      [ a , p ],   [ 2, 2   ],   [  5 , 7     ]  )); %sat 
+constraint forall(d in sundays   )    (global_cardinality_low_up([roster[doc,d]| doc in doccount],  [ a , p ],   [ 2, 2   ],   [  5 ,4     ]  )); %sun
 
 
 %helpers = COUNT === GLOBAL_CARDINALITY
@@ -170,8 +172,9 @@ constraint no_consec_sundays(GM) /\ shifts_per_fortnight(GM,8);
 
 %%DB  needed to keep every wednesday off
 constraint trace("\nDB...",true);
-%constraint reg_string(DB,"( (a p o a a o o)* (o p o a  a    a a)*  (o p o a a   p p)*  (o a o a p   o o)* (a a o a p o o)* (a p o a o o o)*  (a p o a o a a)* (a p o o a a a)*    (a p o a o p p)* (o a o a p o o )* (l{4} o{3})*   )*") ;  %a	p		a		a	a
+constraint reg_string(DB,"( (a p o a a o o)* (o p o a  a    a a)*  (o p o a a   p p)*  (o a o a p   o o)* (a a o a p o o)* (a p o a o o o)*  (a p o a o a a)* (a p o o a a a)*    (a p o a o p p)* (o a o a p o o )* (l{4} o{3})*   )*") ;  %a	p		a		a	a
 
+/*
 array[int,int] of     shifts: db_table =
                              [| a,p,o,a,a, o,o
                               | a,p,o,a,o ,a,a
@@ -185,7 +188,7 @@ array[int,int] of     shifts: db_table =
                               |];
 
 constraint DOC_TABLE(DB,db_table);
-
+*/
 constraint assign_shifts(DB,friday,   p,2);
 constraint assign_shifts(DB,saturday, a,1);
 constraint assign_shifts(DB,saturday, p,1);
@@ -200,8 +203,8 @@ constraint trace("\nCC...",true);
 
 %constraint reg_string(CC,"(   (p o (a|l) a a o o)* (o (o|a|l) (a|o|l) a p o o)*  (p o (a|l) o (a|o|l)   a a)*  (p o a o a    p p)*   (l{4} o{3})*    )*   "        ); 
 
-%constraint reg_string(CC,"(   (p o a a a o o)* (o o a a p  o o)* (o a o a p  o o)*  (p o a a o p p)*  (p o (a|o) (a|o) (a|o) a a)*  (p o (a|o)(a|o)(a|o) o (a|p)(a|p)  )*     (l{4} o{3})*    )*   "        ); 
-
+%constraint reg_string(CC,"(   (p o a a a o o)* (o o a a p  o o)* (o a o a p  o o)*  (p o a a o p p)*  (p o (a|o) (a|o) (a|o) a a)*  (p o (a|o)(a|o)(a|o) o (a|p)(a|p)  )*     (l{4} o{3})*   (. . . . . o o )* )* "        ); 
+/*
 array[int,int] of     shifts: cc_table =[| p,o,a,a,a, o,o
                                          | p,o,a,a,o, a,a
                                          | p,o,a,o,a, a,a
@@ -210,27 +213,31 @@ array[int,int] of     shifts: cc_table =[| p,o,a,a,a, o,o
                                          | a,a,a,o,p, o,o
                                          | a,a,a,p,o, o,o
                                          | a,a,o,a,p, o,o
-                                         | o,a,a,a,a, o,o    %% just temp 
+                                         %| o,a,a,a,a, o,o    %% just temp 
                                          | l,l,l,l,o, o,o  
                                          |];
-
 constraint DOC_TABLE(CC,cc_table);
+*/
 constraint assign_shifts(CC,friday,  p,2);
 constraint assign_shifts(CC,saturday,a,1);
 constraint assign_shifts(CC,saturday,p,1);
 constraint assign_shifts(CC,sunday,  a,1);
 constraint assign_shifts(CC,sunday,  p,1);
 
+%constraint reg_string(CC,"(   (p o a a a o o)* (o o a a p  o o)* (o a o a p  o o)*  (p o a a o p p)*  (p o (a|o) (a|o) (a|o) a a)*  (p o (a|o)(a|o)(a|o) o (a|p)(a|p)  )*     (l{4} o{3})*   (. . . . . o o )* )* "        ); 
+
+
 constraint no_split_weekend(CC) /\ no_consec_weekends(CC)     /\ 
            no_third_weekend(CC) /\ no_consec_friday_pms(CC)   /\ 
            no_mon_after_sun(CC)  /\ shifts_per_fortnight(CC,8); 
+constraint no_am_after_pm(CC);
 constraint trace("\nCC...ok",true);
 
 predicate two_off_after_sun_pm(docs:doc)=  
            forall (day in 1..DAYS-7 where day in sundays)(if roster[doc,day]=p then roster[doc,day+1]=o /\ roster[doc,day+2]=o else true endif);
 
-
-
+%var int: fri_b4_sat_count;
+%fri_b4_sat_count = sum (d in fridays) (bool2int(on_shift(CC,d+1)));
 
 
 %%MC
@@ -460,19 +467,20 @@ constraint trace("\nEW",true);
 
 constraint DOC_TABLE(EW,[| o,a,p,c,a,o,o
                          | o,a,a,p,c,o,o
-                         | o,p,c,a,a,o,o
+                         %| o,p,c,a,a,o,o
                          | o,o,p,c,o,p,p
                          | o,a,p,c,o,p,p
                          | o,o,p,c,o,a,a
                          | o,o,p,c,o,a,a
+                         | o,o,c,p,o,a,a
                          | o,o,p,c,o,a,a
                          | o,a,a,c,p,o,o
-                         | o,a,c,a,p,o,o
+                         | o,a,a,p,c,o,o
                          | l,l,l,o,o,o,o
                          |]);
 
 constraint assign_shifts(EW,friday,p,2,7);
-%constraint assign_shifts(EW,wednesday,p,1,6);
+constraint assign_shifts(EW,wednesday,p,3,6);
 constraint assign_shifts(EW,saturday,a,1);
 constraint assign_shifts(EW,saturday,p,1);
 constraint assign_shifts(EW,sunday, a,1);
@@ -524,7 +532,16 @@ constraint no_consec_friday_pms(DH) /\ no_consec_weekends(DH)  /\ no_mon_after_s
 constraint trace("...DH..ok",true);
 
 constraint trace("\nSK",true);
-constraint reg_string(SK,"( (a c p o o   o o)* (a c p o o a a)* (a c p o o p p)* (o c p o o  o o)*  (l o l o o  o o)*    )*") ;
+%constraint reg_string(SK,"( (a c p o o   o o)* (a c p o o a a)* (a c p o o p p)* (o c p o o  o o)*  (o c p o o  a a)* (l o l o o  o o)*    )*") ;
+
+constraint DOC_TABLE(SK,[| a,o,p,o,o, o,o
+                         | a,c,p,o,o, o,o
+                         | a,c,p,o,o, a,a
+                         | o,c,p,o,o, o,o
+                         | a,o,p,o,o, a,a  
+                         | l,o,l,o,o, o,o  
+                         |]);
+
 constraint assign_shifts(SK,saturday,a,1);
 constraint assign_shifts(SK,saturday,p,0);  %temp
 constraint assign_shifts(SK,sunday,  a,1);
@@ -591,7 +608,10 @@ constraint DOC_TABLE(AV,[| p,c,c,a,o, o,o
                          | p,c,c,o,a, o,o
                          | p,c,c,a,o, a,a
                          | p,c,c,o,a, p,p
-                         | a,a,p,o,o, o,o
+                         | a,a,c,p,o, o,o
+                         | a,a,p,c,o, o,o
+                         | o,a,c,c,a, o,o
+                         | p,o,c,a,a, o,o
                          | o,c,c,a,p, o,o
                          | o,a,c,c,p, o,o
                          | a,c,c,p,o, o,o
@@ -604,24 +624,36 @@ constraint DOC_TABLE(AV,[| p,c,c,a,o, o,o
                          | l,l,l,l,o, o,o
                          |]);
 */
-                         
+%constraint forall(j in weeks) (sum (i in on_call_staff) (mon_oncall[i,j]== on_call) ==1);  
+
+
+constraint shifts_per_fortnight(AV,8);
 constraint assign_shifts(AV,friday,a,2,7);
 constraint assign_shifts(AV,friday,p,2,4);
 constraint assign_shifts(AV,saturday,a,1);
 constraint assign_shifts(AV,sunday,  a,1);
 constraint assign_shifts(AV,saturday,p,1);
-constraint assign_shifts(AV,sunday,  p,1) /\ no_mon_after_sun(AV) /\ no_consec_weekends(AV) /\ no_split_weekend(AV);
 
-
-
-
+constraint assign_shifts(AV,sunday,  p,1) /\ no_am_after_pm(AV) /\ no_consec_weekends(AV) /\ no_split_weekend(AV) /\
+no_am_after_pm(AV);
+constraint weekday_shift_count(AV,c,2);
+constraint weekday_shift_count(AV,p,1);
+%constraint weekday_shift_count(AV,a,1);
 
 %%forall 
 predicate no_am_after_pm(docs:doc) =
-
    forall(day in 1..DAYS-1) (if roster[doc,day]=p then roster[doc,day+1] != a else true endif);
 
-
+predicate two_c_per_week(docs:doc) =
+    forall(week in weekday_weeks) ( if count(roster[doc,week],l,0) then 
+               count(roster[doc,week],c,2)
+                else true endif);
+                
+predicate weekday_shift_count(docs:doc, shifts:shift,int:count) =
+      forall (week in weekday_weeks)
+          (if count(roster[doc,week],l,0) then count(roster[doc,week],shift,count) else true endif);
+                                                                              
+                          
 %LC
 %constraint reg_string(LC,"((o (p|l) o (p|a|o) o (o|a|p) (o|a|p) )*  (o l o l o  o o)*    (o a o l o o o)*             (o p o o o a o )*          )*") ;
 
@@ -675,9 +707,19 @@ constraint reg_string(JD,"( (o  o a o o   o o)*   (o o l o o o o)*   )*") ;
 constraint count(ssu[JD,..],1) = 0 /\ count(incharge[JD,..],1) = 0;
 
 
-constraint reg_string(CK,"(     ((o|a|p)*(o|a|p)*(o|a|p)*(o|a|p)* (o|a|p)* (o|a|p)*(o|a|p)*   )*   )*") ;
 
 
+constraint regular(roster[CK,..], "((o|a|p)*)" );
+
+/*
+constraint DOC_TABLE(CK,[| o,o,a,a,o, a,a
+                         | o,o,a,o,o, p,p  
+                         | o,o,a,a,o, o,o  
+                         | o,o,o,o,o, o,o  
+                         | a,a,a,a,a, a,a  
+                         | p,o,o,a,a, p,p  
+                         |]);
+*/
 
 
 %constraint reg_string(CK,"(    (o o o o o o o)*   )*") ;

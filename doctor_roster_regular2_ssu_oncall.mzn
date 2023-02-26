@@ -16,6 +16,7 @@ constraint forall(d in docs) (global_cardinality_low_up(ssu[d,43..56],[1],[0],[2
 constraint forall(d in docs) (global_cardinality_low_up(ssu[d,57..70],[1],[0],[2]));
 
 constraint global_cardinality_low_up(ssu[AR,..],[1],[0],[10]);
+constraint global_cardinality_low_up(ssu[SK,..],[1],[0],[10]);
 
 
 %%not sat and sun ssu in same weekend
@@ -64,7 +65,9 @@ constraint global_cardinality_low_up(oncall[RM,..],[1],[4],[5]);
 constraint global_cardinality_low_up(oncall[GN,..],[1],[4],[5]);
 constraint global_cardinality_low_up(oncall[EW,..],[1],[4],[5]);
 constraint global_cardinality_low_up(oncall[LB,..],[1],[3],[4]);
-constraint global_cardinality_low_up(oncall[SK,..],[1],[4],[5]);
+
+constraint global_cardinality_low_up(oncall[SK,..],[1],[1],[3]);
+
 constraint global_cardinality_low_up(oncall[BL,..],[1],[3],[4]);
 constraint global_cardinality_low_up(oncall[RP,..],[1],[3],[4]);
 constraint global_cardinality_low_up(oncall[LS,..],[1],[3],[4]);

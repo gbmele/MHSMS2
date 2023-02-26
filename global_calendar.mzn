@@ -75,6 +75,9 @@ array[int] of set of int: weekday_weeks;
 
 weekday_weeks=[wd1,wd2,wd3,wd4,wd5,wd6,wd7,wd8,wd9,wd10];
 
+set of int: weekdays;
+weekdays = {12,3,4,5,8,9,10,11,12,15,16,17,18,19,22,23,24,25,26,29,30,31,32,33,36,37,38,39,40,43,44,45,46,47,50,51,52,53,54,57,58,59,60,61,64,65,66,67,68};
+
 
 predicate force_mon(docs:doc, shifts:shift) =
             forall (day in 8..DAYS where day mod 7 = monday) (if roster[doc,day] != l /\ off_shift(doc,day-1) then roster[doc,day]=shift else true endif);

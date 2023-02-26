@@ -8,7 +8,7 @@ constraint count([roster[RP,d] | d in mondays],p,1);
 
 %%% ???SK  AR LS CK 
 
-set of docs: tempdocs = {RG,GM,DB,CC,MC,SD,ML,HL,DL,RM,GN,EW,LB,DH, BL,CP, RP,  AV, LC, DZ,BB,JD,KM};
+set of docs: tempdocs = {RG,GM,DB,CC,MC,SD,ML,HL,DL,RM,GN,EW,LB,DH, BL,CP, RP,  AV, LC, DZ,BB,JD,KM,LS,CK,SK};
 
 constraint forall(doc in tempdocs , day in 1..DAYS)
 (  if    REQUESTS[ doc, day ] = 99  then roster[ doc, day ]   =  o
@@ -25,13 +25,21 @@ constraint forall(doc in tempdocs , day in 1..DAYS)
   elseif REQUESTS[ doc, day ] = 92  then roster[ doc, day ]  !=  p
   elseif REQUESTS[ doc, day ] = 99  then roster[ doc, day ]   =  o
   
-  elseif doc in {CK,LS} then   if REQUESTS[doc,day]=0 then roster[doc,day]=o else true endif  
+  elseif doc in {LS,CK} then   if REQUESTS[doc,day]=0 then roster[doc,day]=o else true endif  
       
 
   else true
   endif);
-
-% fixing the leave count within minizinc == tthe total of leave in REQUESTS ==== total of leave in roster
+/*
+constraint forall (doc in {CK}, day in 1..DAYS)
+(
+     if     REQUESTS[doc,day]= 1 then roster[doc,day]=a
+     elseif REQUESTS[doc,day]= 2 then roster[doc,day]=p
+     elseif REQUESTS[doc,day]= 0 then roster[doc,day]=o
+     else true
+     endif
+);
+*/
 
 constraint forall(doc in tempdocs)
    (count(REQUESTS[doc,..],41) +        % annual
@@ -81,12 +89,12 @@ array[docs,1..DAYS] of var int: REQUESTS = array2d(docs,1..DAYS,[
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 DB
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 70 DB     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
- 99 , 0 , 0 , 0 , 92, 99, 99,% day 7 CC
+ 0  , 0 , 0 , 0 ,0 , 99, 99,% day 7 CC
  41, 41, 41, 41, 0 , 0 , 0 ,% day 14 CC
  41, 41, 41, 41, 0 , 0,  0,% day 21 CC
  0 , 0 , 0 , 0 , 0 , 0 , 99,% day 28 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 35 CC
- 0 , 0 , 92, 99, 0 , 0 , 0 ,% day 42 CC
+ 0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 42 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 49 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 56 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 CC
@@ -216,17 +224,17 @@ array[docs,1..DAYS] of var int: REQUESTS = array2d(docs,1..DAYS,[
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 DH
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 70 DH     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
- 0 , 0 , 0 , 0 , 0 , 99, 99,% day 7 SK
+ 41 , 0 , 41 , 0 , 0 , 99, 99,% day 7 SK
  41, 0 , 41, 0 , 0 , 0 , 0 ,% day 14 SK
- 1 , 0 , 2 , 0 , 0 , 0 , 0 ,% day 21 SK
- 99, 4 , 0 , 0 , 0 , 0 , 0 ,% day 28 SK
- 0 , 4 , 0 , 0 , 0 , 99, 99,% day 35 SK
+ 0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 21 SK
+ 99, 0 , 0 , 0 , 0 , 0 , 0 ,% day 28 SK
+ 0 , 0 , 0 , 0 , 0 , 99, 99,% day 35 SK
  
- 45, 0 , 45, 0 , 0 , 0 , 0 ,% day 42 SK
- 45, 0 , 45, 0 , 0 , 0 , 0 ,% day 49 SK
- 45, 0 , 45, 0 , 0 , 0 , 0 ,% day 56 SK
- 45, 0 , 45, 0 , 0 , 0 , 0 ,% day 63 SK
- 45, 0 , 45, 0 , 0 , 0 , 0 ,% day 70 SK     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
+ 41, 0 , 41, 0 , 0 ,99 ,99 ,% day 42 SK
+ 41, 0 , 41, 0 , 0 , 99 , 99 ,% day 49 SK
+ 41, 0 , 41, 0 , 0 , 99, 99 ,% day 56 SK
+ 41, 0 , 41, 0 , 0 , 0 , 0 ,% day 63 SK
+ 41, 0 , 41, 0 , 0 , 0 , 0 ,% day 70 SK     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
  0 , 0 , 0 , 1 , 2 , 0 , 0 ,% day 7 BL
  0 , 0 , 0 , 2 , 0 , 0 , 2 ,% day 14 BL
@@ -355,7 +363,7 @@ array[docs,1..DAYS] of var int: REQUESTS = array2d(docs,1..DAYS,[
  0 , 0 , 1 , 0 , 0 , 0 , 0 ,% day 63 JD
  0 , 0 , 1 , 0 , 0 , 0 , 77,% day 70 JD     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
- 3 , 0 , 0 , 1 , 1 , 2 , 2 ,% day 7 CK
+ 1 , 0 , 0 , 1 , 1 , 2 , 2 ,% day 7 CK
  0 , 0 , 2 , 2 , 0 , 1 , 1 ,% day 14 CK
  0 , 1 , 1 , 2 , 2 , 0 , 0 ,% day 21 CK
  2 , 2 , 0 , 0 , 2 , 2 , 2 ,% day 28 CK

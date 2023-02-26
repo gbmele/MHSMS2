@@ -1,3 +1,4 @@
+include "nosets.mzn";
 set of docs: test_doc = {LS};
 
 
@@ -77,6 +78,15 @@ output[show(roster[AV,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in
 output["\n"];
 output[show(roster[HL,d]) ++ "," ++ if d mod 7 = 0 then "|" else "" endif| d in days];output["HL"];
 output["\n"];
+output[show(roster[CK,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in days];output[" CK"];
+output["\n"];
+output[show(roster[SK,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in days];output["SK"];
+output["\n"];
+output[show(roster[LC,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in days];output["Lewis"];
+output["\n"];
+output[show(roster[CC,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in days];output["CC"];
+output["\n"];
+
 output["HL AV == " ++ show(count(HL_AV[..],1))];
 output["\n"];
 output["mon am-" ++ show(min_mon_am)];
@@ -102,4 +112,9 @@ output["\n"];
 constraint forall (day in days) (roster[display_oncall[day],day]=p);
 output["all oncalls on pm\n"];
 
-output [if fix(display_oncall[day])=DH then "doc DH should be oncall on day 6 = saturday " ++ show(display_oncall[day]) ++ " " ++ show(day mod 7) ++ "\n"  else "" endif | day in 1..DAYS]
+output [if fix(display_oncall[day])=DH then "doc DH should be oncall on day 6 = saturday " ++ show(display_oncall[day]) ++ " " ++ show(day mod 7) ++ "\n"  else "" endif | day in 1..DAYS];
+output["\n"];
+output[show(REQUESTS[CK,..])];
+output["\n"];
+output[show(roster[CK,..])];
+output["\n"];
