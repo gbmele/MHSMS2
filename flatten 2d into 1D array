@@ -1,0 +1,5 @@
+
+array[int] of shifts: ttt = [ mc_table[ii,jj] | ii in 1..length(index_set_1of2(mc_table)), jj in 1..length(index_set_2of2(mc_table))];
+
+constraint assert (length(ttt) = length(index_set_1of2(mc_table)) * length(index_set_2of2(mc_table)),"gggg");
+output[show(ttt)];
