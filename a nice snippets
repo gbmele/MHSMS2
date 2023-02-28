@@ -6,6 +6,9 @@ constraint forall (d = CC)  (sum (w in weekday_weeks) (count(roster[d,w],a,4)) <
 
 constraint (sum (w in weekday_weeks) (count(roster[CC,w],a,4)) <=2);
 
+constraint (sum (w in weekday_weeks,d = CC) (count(roster[d,w],a,4)) <=2);
+
+
 
 %%arguably this is harder to read.....
 
