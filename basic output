@@ -1,4 +1,0 @@
-output[show(roster[doc,d])        ++ "," ++  if d mod 7  = 0 then "|" else  "" endif 
-                                         ++  if d mod 14 = 0 then "|" else "" endif
-                                         ++  if d mod 70 = 0 then show(doc) ++ "\n" else "" endif
-      | doc in docs, d in days];
