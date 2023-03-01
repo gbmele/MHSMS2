@@ -46,3 +46,8 @@ predicate weekday_shift_count(docs:doc, shifts:shift, int:count1, int:count2) =
       forall (week in weekday_weeks)
           (if count(roster[doc,week],l,0) then global_cardinality_low_up(roster[doc,week],[shift],[count1],[count2])  else true endif);
 
+predicate no_fri_pm_before_weekend(docs:doc) = 
+   forall (day in fridays) (if roster[doc,day+1]= p then roster[doc,day] != p else true endif);
+
+
+
