@@ -33,12 +33,11 @@ constraint assign_shifts(AV,sunday,  p,1);
 
 constraint no_am_after_pm(AV) /\ no_consec_weekends(AV) /\ no_split_weekend(AV);
 
-constraint weekday_shift_count(AV,c,0,2);
 constraint weekday_shift_count(AV,p,1);
 constraint weekday_shift_count(AV,o,0,2);
 constraint weekday_shift_count(AV,c,1,2);
+constraint weekday_shift_count(AV,a,1);
 
-%constraint weekday_shift_count(AV,a,1);
 predicate weekday_shift_count(docs:doc, shifts:shift,int:count) =
       forall (week in weekday_weeks)
           (if count(roster[doc,week],l,0) then count(roster[doc,week],shift,count) else true endif);
@@ -47,7 +46,3 @@ predicate weekday_shift_count(docs:doc, shifts:shift, int:count1, int:count2) =
       forall (week in weekday_weeks)
           (if count(roster[doc,week],l,0) then global_cardinality_low_up(roster[doc,week],[shift],[count1],[count2])  else true endif);
 
-
-%%forall 
-predicate no_am_after_pm(docs:doc) =
-   forall(day in 1..DAYS-1) (if roster[doc,day]=p then roster[doc,day+1] != a else true endif);
