@@ -1,5 +1,5 @@
 include "nosets.mzn";
-set of docs: test_doc = {LS};
+set of docs: test_doc = {SK};
 
 
 %%constraint count([roster[LC,d] | d in tuesdays],a,1);
@@ -86,6 +86,14 @@ output[show(roster[LC,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in
 output["\n"];
 output[show(roster[CC,d]) ++ "," ++  if d mod 7 = 0 then "|" else "" endif| d in days];output["CC"];
 output["\n"];
+output["\n"];
+output["\n"];
+
+output[show(roster[doc,d])        ++ "," ++  if d mod 7  = 0 then "|" else  "" endif 
+                                         ++  if d mod 14 = 0 then "|" else "" endif
+                                         ++  if d mod 70 = 0 then show(doc) ++ "\n" else "" endif
+      | doc in docs, d in days];
+
 
 output["HL AV == " ++ show(count(HL_AV[..],1))];
 output["\n"];
@@ -106,6 +114,8 @@ output["\n"];
 output["AR SSU-" ++ show(count(ssu[AR,..],1))];
 output["\n"];
 output["DB SSU-" ++ show(count(ssu[DB,..],1))];
+output["\n"];
+output["erin wed am " ++ show(erin_wed_am_count)];
 output["\n"];
 
 %output[show(display_oncall[day]) ++ " " ++ show(roster[display_oncall[day],day]) ++ "\n" | day in days];
