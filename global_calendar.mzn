@@ -151,7 +151,11 @@ predicate no_mon_and_no_tue_after_sun (docs: doc) =
 predicate no_fri_before_sat(docs: doc) =
    forall(d in 1..DAYS where d mod 7 = saturday)
          (if on_shift(doc,d) then off_shift(doc,d-1) else true endif);
+predicate no_fri_before_weekend(docs: doc) =
+   forall(d in 1..DAYS where d mod 7 = saturday)
+         (if on_shift(doc,d) then off_shift(doc,d-1) else true endif);
    
+
 predicate isolate_weekend(docs:doc) = 
       no_mon_after_sun(doc) /\ no_fri_before_sat(doc);
 

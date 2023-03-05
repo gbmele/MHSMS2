@@ -117,6 +117,10 @@ output["DB SSU-" ++ show(count(ssu[DB,..],1))];
 output["\n"];
 output["erin wed am " ++ show(erin_wed_am_count)];
 output["\n"];
+output["HL tue PM " ++ show(HL_tue_pm)];
+output["\n"];
+output["HL thu PM " ++ show(HL_thu_pm)];
+output["\n"];
 
 %output[show(display_oncall[day]) ++ " " ++ show(roster[display_oncall[day],day]) ++ "\n" | day in days];
 constraint forall (day in days) (roster[display_oncall[day],day]=p);

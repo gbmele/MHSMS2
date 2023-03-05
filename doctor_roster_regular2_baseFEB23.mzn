@@ -6,16 +6,16 @@ constraint assign_shifts(AR,saturday,a,2) /\ count([roster[AR,d] | d in saturday
 
 constraint count([roster[RP,d] | d in mondays],p,1);
 
-
+/*
 constraint forall (d = CC)  (sum (w in weekday_weeks) (count(roster[d,w],a,4)) <=2);
 
 
-constraint (sum (w in weekday_weeks,d = CC) (count(roster[d,w],a,4)) <=2);
+constraint (sum (w in weekday_weeks,d = CC) (count(roster[d,w],a,4))  <=2);
 
 
 
 constraint (sum (w in weekday_weeks) (count(roster[CC,w],a,4)) <=2);
-
+*/
 
 
 %enum docs = {RG,GM,DB,CC,MC,SD,ML,HL,DL,RM,GN,EW,LB,DH,SK,BL,CP,RP,AR,LS,AV,LC,KM,DZ,BB,JD,CK,NM};
@@ -100,12 +100,15 @@ array[docs,1..DAYS] of var int: REQUESTS = array2d(docs,1..DAYS,[
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 DB
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 70 DB     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
- 99 , 0 , 0 , 0 , 92, 99, 99,% day 7 CC
+ 0 , 0 , 0 , 0 , 92, 99, 99,% day 7 CC
  41, 41, 41, 41, 0 , 0 , 0 ,% day 14 CC
+ 
  41, 41, 41, 41, 0 , 0,  0,% day 21 CC
  0 , 0 , 0 , 0 , 0 , 0 , 99,% day 28 CC
+ 
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 35 CC
  0 , 0 , 92, 99, 0 , 0 , 0 ,% day 42 CC
+ 
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 49 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 56 CC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 CC
@@ -327,10 +330,12 @@ array[docs,1..DAYS] of var int: REQUESTS = array2d(docs,1..DAYS,[
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 28 LC
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 35 LC
  0 , 0 , 0 , 0 , 0 , 99, 99,% day 42 LC
- 0 , 1 , 0 , 42, 0 , 0 , 0 ,% day 49 LC
- 0 , 42, 0 , 41, 0 , 99, 99,% day 56 LC
+ 
+ 0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 49 LC
+ 0 , 0 , 0 , 0 , 0 , 99, 99,% day 56 LC
+ 
  0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 63 LC
- 0 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 70 LC     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
+ 0 , 41 , 0 , 41 , 0 , 0 , 0 ,% day 70 LC     1-am 2-pm 99-off 41-annual  42-CONF  43-LSL 44-pat leave 45 mat leave 
 
  2 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 7 KM
  1 , 0 , 0 , 0 , 0 , 0 , 0 ,% day 14 KM
