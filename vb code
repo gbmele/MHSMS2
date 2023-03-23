@@ -1,0 +1,108 @@
+Function mm(v As String)
+  Select Case v
+   Case "A", "AM"
+    mm = 1
+   Case "P", "PM"
+    mm = 2
+   Case "AP"
+    mm = 3
+   Case "CS"
+    mm = 4
+   
+   Case "0"
+    mm = "0"
+   Case "AL"
+    mm = 41
+   Case "CL"
+    mm = 42
+   Case "LSL"
+    mm = 43
+   Case "PAT"
+    mm = 44
+   Case "MAT"
+    mm = 45
+   Case "U"
+    mm = 99
+   Case "UA"
+    mm = 91
+   Case "UP"
+    mm = 92
+   Case "77"
+    mm = 77
+   Case "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"
+    mm = v
+   Case "OTH"
+    mm = 0
+    
+   Case Else
+    mm = "FAIL" & v
+  End Select
+  
+End Function
+
+
+Function count_leave(v As String)
+  Select Case v
+      Case "AL", "CL", "LSL", "PAT", "MAT"
+        count_leave = 1
+      Case Else
+        count_leave = 0
+  End Select
+
+End Function
+
+
+
+Function really_darker_sider(rng As Range) As String
+  Dim cell As Range
+  Dim result As String
+  Dim leave_count_constraint As String
+  Dim leave_counter As Integer
+  
+  
+  Dim doc As String
+  Dim ctr As Integer
+  
+  ctr = 0
+  
+  leave_count_constraint = ""
+  leave_counter = 0
+  For Each cell In rng
+    
+    Let ctr = ctr + 1
+    
+    If ctr Mod 70 = 1 Then doc = cell.Offset(0, -1).Value
+            
+    If ctr Mod 7 = 0 Then
+      
+      result = result & mm(cell.Value) & "," & vbTab & "% day " & ctr Mod 70 & " " & doc & vbCrLf
+    Else
+      result = result & mm(cell.Value) & "," & vbTab
+    End If
+    
+    leave_counter = leave_counter + count_leave(cell.Value)
+    
+    
+    If ctr Mod 70 = 0 Then result = result & vbCrLf
+    
+    If ctr Mod 70 = 0 Then leave_count_constraint = leave_count_constraint & "constraint count(roster[" & doc & ",..],l) = " & leave_counter & ";" & vbCrLf
+    
+    If ctr Mod 70 = 0 Then leave_counter = 0
+    
+    
+    
+  Next cell
+  really_darker_sider = result
+  Debug.Print "array[ docs,1..DAYS] of var int:  REQUESTS = array2d(docs,1..DAYS,[" & vbCrLf
+  Debug.Print result & vbCrLf
+  Debug.Print "]); %end of REQUESTS ARRAY" & vbCrLf
+
+
+  Debug.Print leave_count_constraint
+  
+End Function
+
+
+
+
+
