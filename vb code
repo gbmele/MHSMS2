@@ -1,6 +1,16 @@
+Function darksider_con(rng As Range) As String
+  Dim cell As Range
+  Dim result As String
+  For Each cell In rng
+    result = result & cell.Value & ","
+  Next
+  darksider_con = result
+End Function
+
+
 Function mm(v As String)
   Select Case v
-   Case "A", "AM"
+   Case "A", "AM", "a", "am"
     mm = 1
    Case "P", "PM"
     mm = 2
@@ -15,7 +25,7 @@ Function mm(v As String)
     mm = 41
    Case "CL"
     mm = 42
-   Case "LSL"
+   Case "LSL", "LPPA"
     mm = 43
    Case "PAT"
     mm = 44
@@ -35,7 +45,7 @@ Function mm(v As String)
     mm = 0
     
    Case Else
-    mm = "FAIL" & v
+    mm = "FAIL-->" & v
   End Select
   
 End Function
@@ -43,7 +53,7 @@ End Function
 
 Function count_leave(v As String)
   Select Case v
-      Case "AL", "CL", "LSL", "PAT", "MAT"
+      Case "AL", "CL", "LSL", "PAT", "MAT", "LPPA"
         count_leave = 1
       Case Else
         count_leave = 0
@@ -100,9 +110,7 @@ Function really_darker_sider(rng As Range) As String
 
   Debug.Print leave_count_constraint
   
+  
+
 End Function
-
-
-
-
 
