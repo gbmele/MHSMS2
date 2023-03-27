@@ -114,3 +114,28 @@ Function really_darker_sider(rng As Range) As String
 
 End Function
 
+
+Function make_dates(rng As Range)
+     Dim result As String
+     Dim ctr As Integer
+     
+     result = ""
+     ctr = 0
+     
+     For Each cell In rng
+       ctr = ctr + 1
+       If ctr = 1 Then
+          result = result & "if     d = 1 then " & Chr(34) & cell.Value & Chr(34) & vbCrLf
+        Else
+       result = result & "elseif d = " & ctr & " then " & Chr(34) & cell.Value & Chr(34) & vbCrLf
+        End If
+     Next
+     result = "function string: get_day(days: d) = " & vbCrLf & result
+               
+     result = result & "else " & vbTab & Chr(34) & "nuffin" & Chr(34) & vbCrLf
+     
+     result = result & "endif; % end of the big if"
+          
+    Debug.Print result
+End Function
+
