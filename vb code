@@ -93,7 +93,8 @@ Function really_darker_sider(rng As Range) As String
     leave_counter = leave_counter + count_leave(cell.Value)
     
     
-    If ctr Mod 70 = 0 Then result = result & vbCrLf
+    If ctr Mod 70 = 0 Then result = result & "                            %leave count " & doc & " is " & leave_counter & vbCrLf & vbCrLf
+    
     
     If ctr Mod 70 = 0 Then leave_count_constraint = leave_count_constraint & "constraint count(roster[" & doc & ",..],l) = " & leave_counter & ";" & vbCrLf
     
@@ -113,7 +114,6 @@ Function really_darker_sider(rng As Range) As String
   
 
 End Function
-
 
 
 Function make_dates(rng As Range)
