@@ -116,6 +116,96 @@ Function really_darker_sider(rng As Range) As String
 End Function
 
 
+
+Function make_separate_arrays(rng As Range) As String
+Dim cell As Range
+  Dim result As String
+  Dim requests As String
+  
+  Dim leave_count_constraint As String
+  Dim leave_counter As Integer
+  
+  
+  Dim doc As String
+  Dim ctr As Integer
+  
+  ctr = 0
+  
+  leave_count_constraint = ""
+  leave_counter = 0
+  'array[docs,1..70] of var int: R2;
+  'constraint R2[RG,1..70]=RG_requests;
+  'constraint R2[GM,1..70]=GM_requests;
+
+  
+  requests = requests & "array[docs,1..70] of var int: REQUESTS;" & vbCrLf
+  
+  For Each cell In rng
+    
+    Let ctr = ctr + 1
+    
+    If ctr Mod 70 = 1 Then
+     doc = cell.Offset(0, -1).Value
+     result = result & "array[1..70] of var int: " & doc & "_requests = array1d(1..70,[" & vbCrLf
+    
+     requests = requests & "constraint REQUESTS[" & doc & ",1..70] = " & doc & "_requests;" & vbCrLf
+    
+    End If
+    
+    If ctr Mod 7 = 0 Then
+      
+      result = result & mm(cell.Value) & "," & vbTab & "% day " & ctr Mod 70 & " " & doc & vbCrLf
+    Else
+      result = result & mm(cell.Value) & "," & vbTab
+    End If
+    
+    leave_counter = leave_counter + count_leave(cell.Value)
+    
+    
+    If ctr Mod 70 = 0 Then result = result & "                            %leave count " & doc & " is " & leave_counter & vbCrLf & vbCrLf
+    If ctr Mod 70 = 0 Then result = result & " ]); % end of array for doc " & doc & vbCrLf & vbCrLf
+               
+    If ctr Mod 70 = 0 Then leave_count_constraint = leave_count_constraint & "constraint count(roster[" & doc & ",..],l) = " & leave_counter & ";" & vbCrLf
+    
+    If ctr Mod 70 = 0 Then leave_counter = 0
+    
+    
+    
+  Next cell
+  
+  'Dim Path As String
+  'Dim FileNumber As Integer
+
+   Path = "C:\Users\MeleG\Desktop\MHSMS\this_month.txt"
+   
+  FileNumber = FreeFile
+  Open Path For Output As FileNumber
+
+    Print #FileNumber, result
+    Print #FileNumber, leave_count_constraint & vbcrllf & vbCrLf
+    Print #FileNumber, requests
+    Print #FileNumber, "%%% put the dates function next"
+    
+    Close FileNumber
+      
+  
+  make_separate_arrays = result
+  Debug.Print result
+
+  Debug.Print leave_count_constraint & vbCrLf & vbCrLf
+  
+  Debug.Print requests
+  
+  Debug.Print "%%% put the dates function next"
+  
+  
+
+
+
+
+End Function
+
+
 Function make_dates(rng As Range)
      Dim result As String
      Dim ctr As Integer
