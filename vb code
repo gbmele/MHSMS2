@@ -172,7 +172,8 @@ Dim cell As Range
     
   Next cell
   
-    Open ThisWorkbook.Path & "\this_month.txt" For Append As #1
+    Open ThisWorkbook.Path & "\this_month.txt" For Output As #1   ' when doing again and again for Output just over-writes
+    
    
    
     Print #1, result
@@ -228,5 +229,4 @@ Function make_dates(rng As Range)
           
     Debug.Print result
 End Function
-
 
