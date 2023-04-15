@@ -1,0 +1,24 @@
+%%RG
+
+constraint regular(roster[RG,..], "( (c c c (p|c) o o o)* (c c c o o a o)*   (l l l l o o o )*  )*");
+
+constraint assign_shifts(RG,saturday,a,rg_sat);
+
+constraint forall (d in thursdays) 
+         ( (roster[RG,d]=  c <-> roster[GM,d-2]=l) \/
+           (roster[RG,d-3]=l /\  roster[GM,d-3]=l));
+
+constraint no_consec_saturdays(RG) /\ shifts_per_fortnight(RG,8) ;
+
+
+%%GM
+constraint regular(roster[GM,..] , "( (c (p|c) (o|l) c c o o )* (c p o c o o a)*   (l{4} o{3})* )  *") ;
+constraint assign_shifts(GM,sunday,a,gm_sun);
+
+constraint forall (d in tuesdays) 
+    ((roster[GM,d]=  c <-> roster[RG,d+2]=l)  \/  
+     (roster[GM,d-1]=l /\  roster[RG,d-1]=l)) ;
+
+constraint no_consec_sundays(GM) /\ shifts_per_fortnight(GM,8);
+
+
