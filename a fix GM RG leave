@@ -3,7 +3,7 @@ constraint regular(roster[RG,..], "( (c c c (p|c) o o o)* (c c c o o a o)*   (l 
 constraint assign_shifts(RG,saturday,a,rg_sat);
 
 constraint forall (d in thursdays) 
-         ( (roster[RG,d]=  c <-> roster[GM,d-2]=l) \/  % GM on leave --> RG cs on thursday
+         ( (roster[RG,d]=  c <-> roster[GM,d-2]=l) \/  % GM on leave --> RG cs on thursday     x<->y is explained  x if-and-only-if y
            (roster[RG,d-3]=l /\  roster[GM,d-3]=l));  %  GM and RG on leave
 
 constraint no_consec_saturdays(RG) /\ shifts_per_fortnight(RG,8) ;
